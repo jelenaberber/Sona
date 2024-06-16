@@ -96,7 +96,7 @@ namespace API.Controllers
             {
                 dto.Id = id;
                 Room r = _context.Rooms.FirstOrDefault(r => r.Id == id);
-                if (r == null && r.IsActive == true)
+                if (r == null || r.IsActive == false)
                 {
                     return NotFound();
                 }

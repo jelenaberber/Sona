@@ -1,12 +1,14 @@
 ﻿using Application;
 using Application.UseCases.Commands.RestauranServices;
 using Application.UseCases.Commands.Rooms;
+using Application.UseCases.Commands.Services;
 using Application.UseCases.Commands.Users;
 using Application.UseCases.Queries;
 using Implementation;
 using Implementation.Logging.UseCase;
 using Implementation.UseCases.Commands.RestaurantServices;
 using Implementation.UseCases.Commands.Rooms;
+using Implementation.UseCases.Commands.Services;
 using Implementation.UseCases.Commands.Users;
 using Implementation.UseCases.Queries;
 using Implementation.Validators;
@@ -36,6 +38,11 @@ namespace API.Core
             services.AddTransient<ICreateRestaurantServicesCommand, EfCreateRestauranServicesCommand>();
             services.AddTransient<UpdateRestaurantServicesDtoValidator>();
             services.AddTransient<IUpdateRestaurantServicesCommand, EfUpdateRestaurantServiceCommand>();
+
+            services.AddTransient<CreateServiceValidator>();
+            services.AddTransient<ICreateServiceCommand, EfCreateServiceCommand>();
+            services.AddTransient<UpdateServiceDtoValidator>();
+            services.AddTransient<IUpdateServiceCommand, EfUpdateServiceCommand>();
         }
 
         public static Guid? GetTokenId(this HttpRequest request)
