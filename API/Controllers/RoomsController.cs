@@ -56,13 +56,15 @@ namespace API.Controllers
                 Capacity = r.Capacity,
                 Size = r.Size,
                 Price = r.Price,
+                Images = (ICollection<ImageDto>)r.Images,
+                Services = (ICollection<ServiceDto>)r.Services
             };
             
             return Ok(dto);
         }
 
         [HttpPost("available")]
-        public IActionResult Post([FromBody] SearchedDatesDto search, [FromServices] IGetAvailableRooms query)
+        public IActionResult Post([FromBody] SearchDatesAndGuests search, [FromServices] IGetAvailableRooms query)
         {
             try
             {
@@ -123,7 +125,7 @@ namespace API.Controllers
                     return NotFound();
                 }
                 _handler.HandleCommand(command, dto);
-                return Ok(dto);
+                return StatusCode(201);
             }
             catch (ValidationException ex)
             {

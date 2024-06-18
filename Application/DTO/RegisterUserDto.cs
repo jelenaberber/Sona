@@ -12,4 +12,9 @@ namespace Application.DTO
         public string LastName { get; set; }
         public string Password { get; set; }
     }
+
+    public class UpdateUserDto : RegisterUserDto
+    {
+       
+    }
 }

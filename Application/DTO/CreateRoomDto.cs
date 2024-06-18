@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -22,10 +23,15 @@ namespace Application.DTO
         public int? Capacity { get; set; }
         public int? Size { get; set; }
         public decimal? Price { get; set; }
-        public int AvailableRooms { get; set; }
-        public IEnumerable<string> Images { get; set; }
+        public ICollection<ImageDto> Images { get; set; }
         public ICollection<ServiceDto> Services { get; set; }
+        public IEnumerable<ReviewDto> Reviews { get; set; }
 
+    }
+
+    public class AvailableRoomDto : RoomDto
+    {
+        public int AvailableRooms { get; set; }
     }
 
 

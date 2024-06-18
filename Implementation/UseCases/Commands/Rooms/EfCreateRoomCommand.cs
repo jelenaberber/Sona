@@ -59,6 +59,15 @@ namespace Implementation.UseCases.Commands.Rooms
 
             if(data.Services != null)
             {
+                var activeServiceIds = _context.Services.Where(x => x.IsActive == true).Select(x => x.Id).ToList();
+
+                var invalidServiceIds = data.Services.Except(activeServiceIds).ToList();
+
+                if (invalidServiceIds.Any())
+                {
+                    throw new Exception($"Invalid ServiceIds: {string.Join(",", invalidServiceIds)}");
+                }
+
                 var roomServices = data.Services.Select(serviceId => new RoomService
                 {
                     RoomId = roomId,

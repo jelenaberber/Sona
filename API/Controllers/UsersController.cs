@@ -8,6 +8,7 @@ using FluentValidation;
 using Implementation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -34,7 +35,6 @@ namespace API.Controllers
 
 
         // POST api/<UsersController>
-        [Authorize]
         [HttpPost]
         public IActionResult Post([FromBody] RegisterUserDto dto, [FromServices] IRegisterUserCommand cmd)
         {
@@ -68,9 +68,47 @@ namespace API.Controllers
 
         // PUT api/<UsersController>/5
         [Authorize]
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public IActionResult Put([FromBody] UpdateUserDto dto, IUpdateUserCommand command)
         {
+            try
+            {
+                _useCaseHandler.HandleCommand(command, dto);
+                return StatusCode(201);
+            }
+            catch (ValidationException ex)
+            {
+                return UnprocessableEntity(ex.Errors.Select(x => new
+                {
+                    Error = x.ErrorMessage,
+                    Property = x.PropertyName
+                }));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] UpdateUserAccessDto dto, [FromServices] IUpdateUserAccessCommand command)
+        {
+            try
+            {
+                dto.UserId = id;
+                User u = _context.Users.FirstOrDefault(u => u.Id == id);
+                if (u == null || u.IsActive == false)
+                {
+                    return NotFound();
+                }
+                _useCaseHandler.HandleCommand(command, dto);
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500);
+            }
         }
 
         // DELETE api/<UsersController>/5

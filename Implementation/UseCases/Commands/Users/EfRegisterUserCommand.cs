@@ -40,7 +40,11 @@ namespace Implementation.UseCases.Commands.Users
                 Username = data.Username,
                 UseCases = new List<UserUseCase>()
                 {
-                    new UserUseCase { UseCaseId = 4 }
+                    new UserUseCase { UseCaseId = 4 },
+                    new UserUseCase { UseCaseId = 13 },
+                    new UserUseCase { UseCaseId = 15 },
+                    new UserUseCase { UseCaseId = 16 },
+                    new UserUseCase { UseCaseId = 17 }
                 }
             };
 

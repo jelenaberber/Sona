@@ -26,8 +26,7 @@ namespace Implementation.UseCases.Queries
             if (!string.IsNullOrEmpty(search.Keyword))
             {
                 query = query.Where(x => x.Username.Contains(search.Keyword) ||
-                                         x.Email.Contains(search.Keyword) &&
-                                         x.IsActive == true);
+                                         x.Email.Contains(search.Keyword));
             }
 
 

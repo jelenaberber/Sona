@@ -71,7 +71,7 @@ namespace API.Controllers
                     return NotFound();
                 }
                 _handler.HandleCommand(command, dto);
-                return Ok();
+                return StatusCode(201);
             }
             catch (ValidationException ex)
             {

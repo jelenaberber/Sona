@@ -34,6 +34,24 @@ namespace Implementation.UseCases.Commands.Bookings
         {
             _validator.ValidateAndThrow(data);
 
+            var activeRoomIds = _context.Rooms.Where(x => x.IsActive == true).Select(x => x.Id).ToList();
+            var restauranService = _context.RestaurantServices.Find(data.RestaurantServiceId);
+
+            var invalidRoomIds = data.Rooms
+                                .Select(x => x.RoomId)
+                                .Except(activeRoomIds)
+                                .ToList();
+
+            if (invalidRoomIds.Any())
+            {
+                throw new Exception($"Invalid RoomIds: {string.Join(",", invalidRoomIds)}");
+            }
+
+            if (!restauranService.IsActive)
+            {
+                throw new Exception("Invalid RestaurantServiceId");
+            }
+
             Booking booking = new Booking
             {
                 UserId = _actor.Id,

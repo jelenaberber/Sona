@@ -25,7 +25,7 @@ namespace Implementation.UseCases.Queries
 
             if (!string.IsNullOrEmpty(search.Keyword))
             {
-                query = query.Where(x => x.Name.Contains(search.Keyword) && x.IsActive == true);
+                query = query.Where(x => x.Name.Contains(search.Keyword));
             }
 
 

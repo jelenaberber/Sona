@@ -1,6 +1,7 @@
 ﻿using API.Core;
 using Application.DTO;
 using Application.UseCases.Commands.Bookings;
+using Application.UseCases.Queries;
 using DataAccess;
 using Domain;
 using FluentValidation;
@@ -30,18 +31,29 @@ namespace API.Controllers
 
 
         // GET: api/<BookingController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [Authorize]
+        [HttpPost("searchBookings")]
+        public IActionResult Post([FromBody] SearchedDatesDto search, [FromServices] IGetBookingsQuery query)
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                _handler.HandleQuery(query, search);
+                return Ok(_handler.HandleQuery(query, search));
+            }
+            catch (ValidationException ex)
+            {
+                return UnprocessableEntity(ex.Errors.Select(x => new
+                {
+                    Error = x.ErrorMessage,
+                    Property = x.PropertyName
+                }));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
         }
 
-        // GET api/<BookingController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
 
         // POST api/<BookingController>
         [Authorize]
@@ -81,7 +93,7 @@ namespace API.Controllers
                     return NotFound();
                 }
                 _handler.HandleCommand(command, dto);
-                return Ok();
+                return StatusCode(201);
             }
             catch (ValidationException ex)
             {

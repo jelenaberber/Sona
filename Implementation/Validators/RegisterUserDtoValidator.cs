@@ -17,12 +17,14 @@ namespace Implementation.Validators
 
             RuleFor(x => x.Email)
                 .NotEmpty()
-                .EmailAddress()
+                .EmailAddress().WithMessage("Not right format")
                 .Must(x => !ctx.Users.Any(u => u.Email == x))
                 .WithMessage("Email is already in use.");
-            RuleFor(x => x.FirstName).NotEmpty().MinimumLength(2);
-            RuleFor(x => x.LastName).NotEmpty().MinimumLength(2);
-            RuleFor(x => x.Password).NotEmpty().Matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
+            RuleFor(x => x.FirstName).NotEmpty().WithMessage("First name is required.").MinimumLength(2).WithMessage("Minimum two characters.");
+
+            RuleFor(x => x.LastName).NotEmpty().WithMessage("Last name is required.").MinimumLength(2).WithMessage("Minimum two characters.");
+
+            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required.").Matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$")
                 .WithMessage("Minimum eight characters, at least one uppercase letter, one lowercase letter and one number:");
             RuleFor(x => x.Username)
                 .NotEmpty()

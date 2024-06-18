@@ -13,10 +13,10 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Implementation.UseCases.Queries
 {
-    public class EfGetAvailableRoomsForSelectedDates : EfUseCase, IGetAvailableRooms
+    public class EfGetAvailableRoomsForSelectedDatesQuery : EfUseCase, IGetAvailableRooms
     {
-        private SearchDatesValidation _validator;
-        public EfGetAvailableRoomsForSelectedDates(Context context, SearchDatesValidation validator) : base(context)
+        private SearchAvailableRoomsForDatesValidation _validator;
+        public EfGetAvailableRoomsForSelectedDatesQuery(Context context, SearchAvailableRoomsForDatesValidation validator) : base(context)
         {
             _validator = validator;
         }
@@ -25,7 +25,7 @@ namespace Implementation.UseCases.Queries
 
         public string Name => "Get available rooms for searched dates";
 
-        public PagedResponse<RoomDto> Execute(SearchedDatesDto search)
+        public PagedResponse<AvailableRoomDto> Execute(SearchDatesAndGuests search)
         {
             _validator.ValidateAndThrow(search);
             var checkInDate = search.CheckIn;
@@ -68,11 +68,11 @@ namespace Implementation.UseCases.Queries
 
             var pagedQuery = query.Skip(skip).Take(perPage).ToList();
 
-            return new PagedResponse<RoomDto>
+            return new PagedResponse<AvailableRoomDto>
             {
                 CurrentPage = page,
                 TotalCount = totalCount,
-                Data = pagedQuery.Select(q => new RoomDto
+                Data = pagedQuery.Select(q => new AvailableRoomDto
                 {
                     Id = q.Room.Id,
                     Name = q.Room.Name,

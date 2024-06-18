@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Application.UseCases.Queries
 {
-    public interface IGetAvailableRooms : IQuery<PagedResponse<AvailableRoomDto>, SearchDatesAndGuests>
+    public interface IGetBookingsQuery : IQuery<PagedResponse<BookingDto>, SearchedDatesDto>
     {
     }
 }

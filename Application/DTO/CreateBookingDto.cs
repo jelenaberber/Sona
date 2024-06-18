@@ -23,4 +23,10 @@ namespace Application.DTO
     {
         public int Id { get; set; }
     }
+
+    public class BookingDto : UpdateBookingDto
+    {
+        public string Username { get; set; }
+        public string RestaurantService { get; set; }
+    }
 }

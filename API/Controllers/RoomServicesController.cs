@@ -32,12 +32,6 @@ namespace API.Controllers
         public IActionResult Get([FromQuery] ServiceSearch search, [FromServices] IGetServicesQuery query)
             => Ok(_handler.HandleQuery(query, search));
 
-        // GET api/<RoomServicesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
 
         [Authorize]
         [HttpPost]
@@ -76,7 +70,7 @@ namespace API.Controllers
                     return NotFound();
                 }
                 _handler.HandleCommand(command, dto);
-                return Ok();
+                return StatusCode(201);
             }
             catch (ValidationException ex)
             {
@@ -106,7 +100,7 @@ namespace API.Controllers
                 }
                 service.IsActive = false;
                 _context.SaveChanges();
-                return StatusCode(204);
+                return NoContent();
             }
             catch (Exception ex)
             {

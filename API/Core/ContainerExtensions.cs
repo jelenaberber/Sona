@@ -1,4 +1,5 @@
 ﻿using Application;
+using Application.DTO;
 using Application.UseCases.Commands.Bookings;
 using Application.UseCases.Commands.RestauranServices;
 using Application.UseCases.Commands.Reviews;
@@ -30,8 +31,8 @@ namespace API.Core
             services.AddTransient<UpdateRoomValidator>();
             services.AddTransient<IUpdateRoomCommand, EfUpdateRoomCommand>();
             services.AddTransient<IGetRoomsQuery, EfGetRoomsQuery>();
-            services.AddTransient<SearchDatesValidation>();
-            services.AddTransient<IGetAvailableRooms, EfGetAvailableRoomsForSelectedDates>();
+            services.AddTransient<SearchAvailableRoomsForDatesValidation>();
+            services.AddTransient<IGetAvailableRooms, EfGetAvailableRoomsForSelectedDatesQuery>();
 
             services.AddTransient<UseCaseHandler>();
             services.AddTransient<IUseCaseLogger, DBUseCaseLogger>();
@@ -39,6 +40,10 @@ namespace API.Core
             services.AddTransient<IRegisterUserCommand, EfRegisterUserCommand>();
             services.AddTransient<RegisterUserDtoValidator>();
             services.AddTransient<IGetUsersQuery, EfGetUsersQuery>();
+            services.AddTransient<UpdateUserDtoValidator>();
+            services.AddTransient<IUpdateUserCommand, EfUpdateUserCommand>();
+            services.AddTransient<UpdateUserAccessDto>();
+            services.AddTransient<IUpdateUserAccessCommand, EfUpdateUserAccessCommand>();
 
             services.AddTransient<CreateRestauranServicesDtoValidator>();
             services.AddTransient<ICreateRestaurantServicesCommand, EfCreateRestauranServicesCommand>();
@@ -61,6 +66,8 @@ namespace API.Core
             services.AddTransient<ICreateReviewCommand, EfCreateReviewCommand>();
             services.AddTransient<UpdateReviewDtoValidator>();
             services.AddTransient<IUpdateReviewCommand, EfUpdateReviewCommand>();
+            services.AddTransient<SearchDatesValidation>();
+            services.AddTransient<IGetBookingsQuery, EfGetBookingsQuery>();
         }
 
         public static Guid? GetTokenId(this HttpRequest request)

@@ -18,4 +18,9 @@ namespace Application.DTO
         public string Comment { get; set; }
     }
 
+    public class ReviewDto : UpdateReviewDto
+    {
+        public string Username { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
 }

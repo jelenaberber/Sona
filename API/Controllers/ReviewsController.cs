@@ -29,20 +29,6 @@ namespace API.Controllers
             _handler = handler;
             _actor = actor;
         }
-        // GET: api/<ReviewsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<ReviewsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST api/<ReviewsController>
         [Authorize]
         [HttpPost]
@@ -81,7 +67,7 @@ namespace API.Controllers
                     return NotFound();
                 }
                 _handler.HandleCommand(command, dto);
-                return Ok();
+                return StatusCode(201);
             }
             catch (ValidationException ex)
             {

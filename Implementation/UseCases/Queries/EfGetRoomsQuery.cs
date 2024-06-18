@@ -1,6 +1,7 @@
 ﻿using Application.DTO;
 using Application.UseCases.Queries;
 using DataAccess;
+using Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace Implementation.UseCases.Queries
 
             if (!string.IsNullOrEmpty(search.Keyword))
             {
-                query = query.Where(x => x.Name.Contains(search.Keyword) && x.IsActive == true);
+                query = query.Where(x => x.Name.Contains(search.Keyword));
             }
 
 
@@ -48,12 +49,24 @@ namespace Implementation.UseCases.Queries
                     Capacity = x.Capacity,
                     Size = x.Size,
                     Price = x.Price,
-                    Images = x.Images.Select(y => y.ImagePath).ToArray(),
+                    Images = x.Images.Select(y => new ImageDto
+                    {
+                        Id = y.Id,
+                        Path = y.ImagePath,
+                    }).ToList(),
                     Services = x.Services.Select(s => new ServiceDto
                     {
                         Id = s.ServiceId,
                         Name = s.Service.Name,
                     }).ToList(),
+                    Reviews = x.Reviews.Select(r => new ReviewDto
+                    {
+                        Id = r.Id,
+                        Rate = r.Rate,
+                        Comment = r.Comment,
+                        CreatedAt = r.CreatedAt,
+                        Username = r.User.Username
+                    })
                 }).ToList(),
                 PerPage = perPage,
                 TotalCount = totalCount,
