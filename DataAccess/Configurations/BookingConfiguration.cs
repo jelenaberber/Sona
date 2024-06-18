@@ -35,7 +35,9 @@ namespace DataAccess.Configurations
                                        .HasForeignKey(x => x.UserId)
                                        .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(x => x.RestaurantService).WithMany(x => x.Bookings)
+            builder.Property(x => x.RestaurantServiceId).IsRequired(false);
+
+            builder.HasOne(x => x.RestaurantServices).WithMany(x => x.Bookings)
                                        .HasForeignKey(x => x.RestaurantServiceId)
                                        .OnDelete(DeleteBehavior.Restrict);
 

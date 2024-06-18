@@ -1,6 +1,7 @@
 ﻿using API.Core;
 using Application.DTO;
 using Application.UseCases.Commands.Services;
+using Application.UseCases.Queries;
 using DataAccess;
 using Domain;
 using FluentValidation;
@@ -28,10 +29,8 @@ namespace API.Controllers
         }
         // GET: api/<RoomServicesController>
         [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        public IActionResult Get([FromQuery] ServiceSearch search, [FromServices] IGetServicesQuery query)
+            => Ok(_handler.HandleQuery(query, search));
 
         // GET api/<RoomServicesController>/5
         [HttpGet("{id}")]
@@ -96,8 +95,23 @@ namespace API.Controllers
         // DELETE api/<RoomServicesController>/5
         [Authorize]
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            try
+            {
+                Service service = _context.Services.FirstOrDefault(service => service.Id == id);
+                if(service == null || service.IsActive == false)
+                {
+                    return NotFound();
+                }
+                service.IsActive = false;
+                _context.SaveChanges();
+                return StatusCode(204);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }

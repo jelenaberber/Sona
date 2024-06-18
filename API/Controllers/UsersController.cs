@@ -27,18 +27,14 @@ namespace API.Controllers
         }
 
         // GET: api/<UsersController>
+        [Authorize]
         [HttpGet]
         public IActionResult Get([FromQuery] UserSearch search, [FromServices] IGetUsersQuery query)
             => Ok(_useCaseHandler.HandleQuery(query, search));
 
-        // GET api/<UsersController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
 
         // POST api/<UsersController>
+        [Authorize]
         [HttpPost]
         public IActionResult Post([FromBody] RegisterUserDto dto, [FromServices] IRegisterUserCommand cmd)
         {
@@ -71,6 +67,7 @@ namespace API.Controllers
         }
 
         // PUT api/<UsersController>/5
+        [Authorize]
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {

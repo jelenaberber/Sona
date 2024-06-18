@@ -22,6 +22,10 @@ namespace Application.DTO
         public int? Capacity { get; set; }
         public int? Size { get; set; }
         public decimal? Price { get; set; }
+        public int AvailableRooms { get; set; }
+        public IEnumerable<string> Images { get; set; }
+        public ICollection<ServiceDto> Services { get; set; }
+
     }
 
 

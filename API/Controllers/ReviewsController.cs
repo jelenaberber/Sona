@@ -1,14 +1,13 @@
 ﻿using API.Core;
+using Application;
 using Application.DTO;
-using Application.UseCases.Commands.RestauranServices;
-using Application.UseCases.Queries;
+using Application.UseCases.Commands.Reviews;
 using DataAccess;
 using Domain;
 using FluentValidation;
 using Implementation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,26 +15,38 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RestaurantServicesController : ControllerBase
+    public class ReviewsController : ControllerBase
     {
         private Context _context;
         private IExceptionLogger _logger;
         private UseCaseHandler _handler;
-        public RestaurantServicesController(Context context, IExceptionLogger logger, UseCaseHandler handler)
+        private readonly IApplicationActor _actor;
+
+        public ReviewsController(Context context, IExceptionLogger logger, UseCaseHandler handler, IApplicationActor actor)
         {
             _context = context;
             _logger = logger;
             _handler = handler;
+            _actor = actor;
         }
-        // GET: api/<RestaurantServicesController>
+        // GET: api/<ReviewsController>
         [HttpGet]
-        public IActionResult Get([FromQuery] RestaurantServiceSearch search, [FromServices] IGetRestaurantServicesQuery query)
-            => Ok(_handler.HandleQuery(query, search));
+        public IEnumerable<string> Get()
+        {
+            return new string[] { "value1", "value2" };
+        }
 
-        // POST api/<RestaurantServicesController>
+        // GET api/<ReviewsController>/5
+        [HttpGet("{id}")]
+        public string Get(int id)
+        {
+            return "value";
+        }
+
+        // POST api/<ReviewsController>
         [Authorize]
         [HttpPost]
-        public IActionResult Post([FromBody] CreateRestauranServicesDto dto, [FromServices] ICreateRestaurantServicesCommand command)
+        public IActionResult Post([FromBody] CreateReviewDto dto, [FromServices] ICreateReviewCommand command)
         {
             try
             {
@@ -56,16 +67,15 @@ namespace API.Controllers
             }
         }
 
-        // PUT api/<RestaurantServicesController>/5
+        // PUT api/<ReviewsController>/5
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] UpdateRestauranServicesDto dto, [FromServices] IUpdateRestaurantServicesCommand command)
+        public IActionResult Put(int id, [FromBody] UpdateReviewDto dto, [FromServices] IUpdateReviewCommand command)
         {
-
             try
             {
                 dto.Id = id;
-                RestaurantService r = _context.RestaurantServices.FirstOrDefault(r => r.Id == id);
+                Review r = _context.Reviews.FirstOrDefault(r => r.Id == id);
                 if (r == null || r.IsActive == false)
                 {
                     return NotFound();
@@ -87,15 +97,19 @@ namespace API.Controllers
             }
         }
 
-        // DELETE api/<RestaurantServicesController>/5
-        [Authorize]
+        // DELETE api/<ReviewsController>/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            RestaurantService r = _context.RestaurantServices.Find(id);
+
+            Review r = _context.Reviews.Find(id);
             if (r == null || r.IsActive == false)
             {
                 return NotFound();
+            }
+            if(r.UserId != _actor.Id)
+            {
+                return BadRequest();
             }
             r.IsActive = false;
             _context.SaveChanges();

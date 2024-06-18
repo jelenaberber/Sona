@@ -61,8 +61,30 @@ namespace API.Controllers
             return Ok(dto);
         }
 
-        // POST api/<RoomsController>
-        [Authorize]
+        [HttpPost("available")]
+        public IActionResult Post([FromBody] SearchedDatesDto search, [FromServices] IGetAvailableRooms query)
+        {
+            try
+            {
+                _handler.HandleQuery(query, search);
+                return Ok(_handler.HandleQuery(query, search));
+            }
+            catch (ValidationException ex)
+            {
+                return UnprocessableEntity(ex.Errors.Select(x => new
+                {
+                    Error = x.ErrorMessage,
+                    Property = x.PropertyName
+                }));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
+        }
+
+            // POST api/<RoomsController>
+            [Authorize]
         [HttpPost]
         public IActionResult Post([FromBody] CreateRoomDto dto, [FromServices] ICreateRoomCommand command)
         {

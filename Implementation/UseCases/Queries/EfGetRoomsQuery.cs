@@ -21,7 +21,7 @@ namespace Implementation.UseCases.Queries
 
         public PagedResponse<RoomDto> Execute(RoomSearch search)
         {
-            var query = Context.Rooms.AsQueryable();
+            var query = Context.Rooms.Where(x => x.IsActive == true).AsQueryable();
 
             if (!string.IsNullOrEmpty(search.Keyword))
             {
@@ -48,6 +48,12 @@ namespace Implementation.UseCases.Queries
                     Capacity = x.Capacity,
                     Size = x.Size,
                     Price = x.Price,
+                    Images = x.Images.Select(y => y.ImagePath).ToArray(),
+                    Services = x.Services.Select(s => new ServiceDto
+                    {
+                        Id = s.ServiceId,
+                        Name = s.Service.Name,
+                    }).ToList(),
                 }).ToList(),
                 PerPage = perPage,
                 TotalCount = totalCount,

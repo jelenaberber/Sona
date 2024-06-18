@@ -16,4 +16,12 @@ namespace Application.DTO
     {
         public int Id { get; set; }
     }
+
+    public class RestaurantServiceDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal PricePerDay { get; set; }
+    }
 }

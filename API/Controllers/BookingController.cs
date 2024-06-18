@@ -1,7 +1,6 @@
 ﻿using API.Core;
 using Application.DTO;
-using Application.UseCases.Commands.RestauranServices;
-using Application.UseCases.Queries;
+using Application.UseCases.Commands.Bookings;
 using DataAccess;
 using Domain;
 using FluentValidation;
@@ -16,26 +15,38 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RestaurantServicesController : ControllerBase
+    public class BookingController : ControllerBase
     {
         private Context _context;
         private IExceptionLogger _logger;
         private UseCaseHandler _handler;
-        public RestaurantServicesController(Context context, IExceptionLogger logger, UseCaseHandler handler)
+
+        public BookingController(Context context, IExceptionLogger logger, UseCaseHandler handler)
         {
             _context = context;
             _logger = logger;
             _handler = handler;
         }
-        // GET: api/<RestaurantServicesController>
-        [HttpGet]
-        public IActionResult Get([FromQuery] RestaurantServiceSearch search, [FromServices] IGetRestaurantServicesQuery query)
-            => Ok(_handler.HandleQuery(query, search));
 
-        // POST api/<RestaurantServicesController>
+
+        // GET: api/<BookingController>
+        [HttpGet]
+        public IEnumerable<string> Get()
+        {
+            return new string[] { "value1", "value2" };
+        }
+
+        // GET api/<BookingController>/5
+        [HttpGet("{id}")]
+        public string Get(int id)
+        {
+            return "value";
+        }
+
+        // POST api/<BookingController>
         [Authorize]
         [HttpPost]
-        public IActionResult Post([FromBody] CreateRestauranServicesDto dto, [FromServices] ICreateRestaurantServicesCommand command)
+        public IActionResult Post([FromBody] CreateBookingDto dto, [FromServices] ICreateBookingCommand command)
         {
             try
             {
@@ -56,17 +67,16 @@ namespace API.Controllers
             }
         }
 
-        // PUT api/<RestaurantServicesController>/5
+        // PUT api/<BookingController>/5
         [Authorize]
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] UpdateRestauranServicesDto dto, [FromServices] IUpdateRestaurantServicesCommand command)
+        public IActionResult Put(int id, [FromBody] UpdateBookingDto dto, [FromServices] IUpdateBookingCommand command)
         {
-
             try
             {
                 dto.Id = id;
-                RestaurantService r = _context.RestaurantServices.FirstOrDefault(r => r.Id == id);
-                if (r == null || r.IsActive == false)
+                Booking b = _context.Bookings.FirstOrDefault(b => b.Id == id);
+                if (b == null || b.IsActive == false)
                 {
                     return NotFound();
                 }
@@ -87,17 +97,17 @@ namespace API.Controllers
             }
         }
 
-        // DELETE api/<RestaurantServicesController>/5
+        // DELETE api/<BookingController>/5
         [Authorize]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            RestaurantService r = _context.RestaurantServices.Find(id);
-            if (r == null || r.IsActive == false)
+            Booking b = _context.Bookings.Find(id);
+            if (b == null || b.IsActive == false)
             {
                 return NotFound();
             }
-            r.IsActive = false;
+            b.IsActive = false;
             _context.SaveChanges();
             return NoContent();
         }

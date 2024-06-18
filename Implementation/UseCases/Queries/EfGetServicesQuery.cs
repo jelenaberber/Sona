@@ -9,25 +9,23 @@ using System.Threading.Tasks;
 
 namespace Implementation.UseCases.Queries
 {
-    public class EfGetUsersQuery : EfUseCase, IGetUsersQuery
+    public class EfGetServicesQuery : EfUseCase, IGetServicesQuery
     {
-        public EfGetUsersQuery(Context context) : base(context)
+        public EfGetServicesQuery(Context context) : base(context)
         {
         }
 
-        public int Id => 3;
+        public int Id => 11;
 
-        public string Name => "Search Users";
+        public string Name => "Search room services";
 
-        public PagedResponse<UserDto> Execute(UserSearch search)
+        public PagedResponse<ServiceDto> Execute(ServiceSearch search)
         {
-            var query = Context.Users.Where(x => x.IsActive == true).AsQueryable();
+            var query = Context.Services.Where(x => x.IsActive == true).AsQueryable();
 
             if (!string.IsNullOrEmpty(search.Keyword))
             {
-                query = query.Where(x => x.Username.Contains(search.Keyword) ||
-                                         x.Email.Contains(search.Keyword) &&
-                                         x.IsActive == true);
+                query = query.Where(x => x.Name.Contains(search.Keyword) && x.IsActive == true);
             }
 
 
@@ -36,22 +34,17 @@ namespace Implementation.UseCases.Queries
             int perPage = search.PerPage.HasValue ? (int)Math.Abs((double)search.PerPage) : 10;
             int page = search.Page.HasValue ? (int)Math.Abs((double)search.Page) : 1;
 
-            //16 PerPage = 5, Page = 2
-
             int skip = perPage * (page - 1);
 
             query = query.Skip(skip).Take(perPage);
 
-            return new PagedResponse<UserDto>
+            return new PagedResponse<ServiceDto>
             {
                 CurrentPage = page,
-                Data = query.Select(x => new UserDto
+                Data = query.Select(x => new ServiceDto
                 {
                     Id = x.Id,
-                    Email = x.Email,
-                    FirstName = x.FirstName,
-                    LastName = x.LastName,
-                    Username = x.Username,
+                    Name = x.Name
                 }).ToList(),
                 PerPage = perPage,
                 TotalCount = totalCount,

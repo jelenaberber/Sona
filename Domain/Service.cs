@@ -4,9 +4,8 @@ using System.Text;
 
 namespace Domain
 {
-    public class Service
+    public class Service : Entity
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public virtual ICollection<RoomService> Rooms { get; set; }
     }
